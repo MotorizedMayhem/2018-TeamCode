@@ -1,27 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.transition.Slide;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-import javax.security.auth.callback.Callback;
 
-
-@TeleOp(name="MotorTest", group="Linear Opmode")
-public class TestingJig extends LinearOpMode {
+@TeleOp(name="ControllerTest", group="Linear Opmode")
+public class TestingController extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -82,62 +75,21 @@ public class TestingJig extends LinearOpMode {
         imu.initialize(parameters);
 
         // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+        //waitForStart();
         runtime.reset();
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         telemetry.setAutoClear(false);
 
-        // START MOTOR TESTING SEQUENCE
-        // **********************
-        Telemetry.Item MotorOne = telemetry.addData("Motor1", "Bind: Testing        Encoder: Waiting"); //Because we start right after
-        Telemetry.Item MotorTwo = telemetry.addData("Motor2", "Waiting");
-        Telemetry.Item MotorThree = telemetry.addData("Motor3", "Waiting");
-        Telemetry.Item MotorFour = telemetry.addData("Motor4", "Waiting");
-        telemetry.update();
-
-          testMotor(Motor1, MotorOne);
-          testMotor(Motor2, MotorTwo);
-        //testMotor(Motor3, MotorThree);
-        //testMotor(Motor4, MotorFour);
 
         //#############Gamepad Testing ################
-        //telemetry.clear();
-        //testGamepad(gamepad1, "Gamepad1");
-        //testGamepad(gamepad2, "Gamepad2");
-        //telemetry.clear();
-        //telemetry.update();
-
-
-
-    }
-    private void testMotor(DcMotor Motor, Telemetry.Item motorTelem)
-    {
-        Motor.setPower(.5); //Forward 1.5 second
-        sleep(1500);
-        Motor.setPower(0);  // Stop
-        sleep(250);
-        Motor.setPower(-.5);
-        sleep(1500); //Backward 1.5 second
-        Motor.setPower(0);
-        //TODO find some way to check if motors ran w/o encoders
-        motorTelem.setValue("Blind: Don't Know       Encoder: Starting");
+        telemetry.clear();
+        testGamepad(gamepad1, "Gamepad1");
+        testGamepad(gamepad2, "Gamepad2");
+        telemetry.clear();
         telemetry.update();
 
+        waitForStart();
 
-        //Encoder
-        Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        sleep(250); //Stop
-        Motor.setTargetPosition(200);
-        Motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Motor.setPower(.5);
-        while (Motor.isBusy() && opModeIsActive()){sleep(50);}
-        double currentPosition = Motor.getCurrentPosition();
-        if (currentPosition > 190 && currentPosition < 210)
-        {
-            motorTelem.setValue("Blind: Don't Know       Encoder: Success, (%.2f)", currentPosition);
-        }
-        else {motorTelem.setValue("Blind: Don't Know       Encoder: Failure, (%.2f)", currentPosition);}
-        telemetry.update();
     }
     private void testGamepad(Gamepad gamepad, String gamepadName)
     {
