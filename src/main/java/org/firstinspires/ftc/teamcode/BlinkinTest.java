@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.PWMOutput;
 import com.qualcomm.robotcore.hardware.PWMOutputController;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -24,7 +25,10 @@ public class BlinkinTest extends LinearOpMode {
         index = telemetry.addData("Input", "start");
 
         waitForStart();
+        int indexLight = 50;
+        setLights(lightStrip,indexLight);
         while (opModeIsActive()) {
+            /*
             setLights(lightStrip,1); // Rainbow, Rainbow Palette
             sleep(2000);
             setLights(lightStrip,22); //Fire, Large
@@ -38,12 +42,34 @@ public class BlinkinTest extends LinearOpMode {
             setLights(lightStrip,79); //Hot pink
             sleep(2000);
             break;
+            */
+            if (gamepad1.a){
+                indexLight++;
+                setLights(lightStrip,indexLight);
+                sleep(300);
             }
+            if (gamepad1.b){
+                indexLight--;
+                setLights(lightStrip,indexLight);
+                sleep(300);
+            }
+            if (gamepad1.y){
+                indexLight+=10;
+                setLights(lightStrip,indexLight);
+                sleep(300);
+            }
+            if (gamepad1.x){
+                indexLight-=10;
+                setLights(lightStrip,indexLight);
+                sleep(300);
+            }
+        }
 
     }
     private void setLights(Servo lights, int input)
     {
-        double newPWM = input*0.005 + 0.2475;
+        input = Range.clip(input, 1, 100) ;
+        double newPWM = input*0.0055 + 0.2217;
         lights.setPosition(newPWM);
         position.setValue(newPWM);
         index.setValue(input);
