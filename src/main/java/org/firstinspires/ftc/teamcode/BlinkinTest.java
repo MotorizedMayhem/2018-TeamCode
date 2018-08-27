@@ -26,7 +26,7 @@ public class BlinkinTest extends LinearOpMode {
 
         waitForStart();
         int indexLight = 50;
-        setLights(lightStrip,indexLight);
+        double currentPWM = setLights(lightStrip,indexLight);
         while (opModeIsActive()) {
             /*
             setLights(lightStrip,1); // Rainbow, Rainbow Palette
@@ -43,36 +43,56 @@ public class BlinkinTest extends LinearOpMode {
             sleep(2000);
             break;
             */
-            if (gamepad1.a){
+
+            if (gamepad1.b){
                 indexLight++;
-                setLights(lightStrip,indexLight);
+                currentPWM=setLights(lightStrip,indexLight);
                 sleep(300);
             }
-            if (gamepad1.b){
+            if (gamepad1.a){
                 indexLight--;
-                setLights(lightStrip,indexLight);
+                currentPWM=setLights(lightStrip,indexLight);
                 sleep(300);
             }
             if (gamepad1.y){
                 indexLight+=10;
-                setLights(lightStrip,indexLight);
+                currentPWM=setLights(lightStrip,indexLight);
                 sleep(300);
             }
             if (gamepad1.x){
                 indexLight-=10;
-                setLights(lightStrip,indexLight);
+                currentPWM=setLights(lightStrip,indexLight);
+                sleep(300);
+            }
+
+            if (gamepad1.dpad_up){
+                currentPWM+=0.0001;
+                setLights(lightStrip, currentPWM);
+                sleep(300);
+            }
+            if (gamepad1.dpad_down)
+            {
+                currentPWM -= 0.0001;
+                setLights(lightStrip,currentPWM);
                 sleep(300);
             }
         }
 
     }
-    private void setLights(Servo lights, int input)
+    private double setLights(Servo lights, int input)
     {
         input = Range.clip(input, 1, 100) ;
-        double newPWM = input*0.0055 + 0.2217;
+        double newPWM = input*0.00555 + 0.22075;
         lights.setPosition(newPWM);
-        position.setValue(newPWM);
+        position.setValue("%6f",lights.getPosition());
         index.setValue(input);
+        telemetry.update();
+        return  newPWM;
+    }
+    private void setLights(Servo lights, double newPWM)
+    {
+        lights.setPosition(newPWM);
+        position.setValue("%6f",lights.getPosition());
         telemetry.update();
     }
 

@@ -8,7 +8,10 @@ import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -20,7 +23,8 @@ public class SensorTest extends LinearOpMode {
     private NormalizedColorSensor colorSensor;
     private LED light = null;
     private DistanceSensor distanceSensor = null;
-    private Servo s1 = null;
+    private Servo lightStrip = null;
+    private TouchSensor touchSensor = null;
 
 
     @Override
@@ -30,11 +34,7 @@ public class SensorTest extends LinearOpMode {
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
         light = hardwareMap.get(LED.class, "lightStrip");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
-
-
-        Servo.Direction one  = s1.getDirection();
-
+        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
 
 
 
@@ -81,17 +81,49 @@ public class SensorTest extends LinearOpMode {
             telemetry.update();
         }
         telemetry.clear();
-        telemetry.update();
+        telemetry.addData("Instructions", "Bring hand in until lights flash, then bring back out");
         Telemetry.Item distanceAway = telemetry.addData("Distance", "0 in");
-        while (opModeIsActive())
+        telemetry.update();
+        double distance=5;
+        while (opModeIsActive() && distance > 2)
         {
-            distanceAway.setValue(distanceSensor.getDistance(DistanceUnit.INCH)+ "in");
+            distance = distanceSensor.getDistance(DistanceUnit.INCH);
+            distanceAway.setValue(distance + "in");
             telemetry.update();
         }
+        setLights(lightStrip, 88); //dark green
+        sleep(200);
+        setLights(lightStrip, 81); //back to red
+        while (opModeIsActive() && distance < 10 )
+        {
+            distance = distanceSensor.getDistance(DistanceUnit.INCH);
+            distanceAway.setValue(distance + "in");
+            telemetry.update();
+        }
+        setLights(lightStrip, 88); //dark green
+        sleep(200);
+
+        telemetry.clear();
+        telemetry.addData("Instructions", "Click touch sensor");
+        Telemetry.Item touch = telemetry.addData("touch", "false");
+        telemetry.update();
+        while (opModeIsActive() && !touchSensor.isPressed())//touch sensor is not pressed
+        {
+            setLights(lightStrip, 81); //red
+        }
+        setLights(lightStrip, 88); //dark green
+        sleep(200);
 
 
-
-
+    }
+    private void setLights(Servo lights, int input)
+    {
+        input = Range.clip(input, 1, 100) ;
+        double newPWM = input*0.00555 + 0.22075;
+        lights.setPosition(newPWM);
+        //position.setValue("%6f",lights.getPosition());
+        //index.setValue(input);
+        //telemetry.update();
     }
 
 
