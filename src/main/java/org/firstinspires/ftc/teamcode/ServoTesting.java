@@ -26,15 +26,14 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+@TeleOp(name="Servo Testing", group="Iterative Opmode")
 
 public class ServoTesting extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
     private CRServo Servo1 = null;
+    private Servo lightStrip = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -46,14 +45,11 @@ public class ServoTesting extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         Servo1 = hardwareMap.get(CRServo.class,"Servo1");
+        lightStrip = hardwareMap.get(Servo.class, "lightStrip");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -95,10 +91,15 @@ public class ServoTesting extends OpMode
         */
         Servo1.setPower(gamepad1.right_trigger + -gamepad1.left_trigger);
 
+        int indexLight = 0;
+        if (Servo1.getPower() > -1)
+            indexLight = Math.round((float)Servo1.getPower() * 99 + 1);
+        setLights(lightStrip, indexLight);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP
@@ -106,5 +107,10 @@ public class ServoTesting extends OpMode
     @Override
     public void stop() {
     }
-
+    private void setLights(Servo lights, int input)
+    {
+        input = Range.clip(input, 1, 100) ;
+        double newPWM = input*0.00555 + 0.22075;
+        lights.setPosition(newPWM);
+    }
 }
