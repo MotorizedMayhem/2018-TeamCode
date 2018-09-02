@@ -1,4 +1,0 @@
-#Sat Sep 01 18:05:29 CDT 2018
-base.0=C\:\\Users\\Shockwave1022\\Desktop\\FTC\\ftc_app-3.7\\ftc_app-3.7\\2018-TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-path.0=classes.dex
-renamed.0=classes.dex
