@@ -23,8 +23,6 @@ Thumbs.db
 .idea
 .gradle
 build/
-.gitignore
-.gitignore.bak
 
 *ASUS_PC_01*
 
