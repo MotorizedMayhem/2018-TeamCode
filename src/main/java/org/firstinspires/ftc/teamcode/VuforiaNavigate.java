@@ -1,13 +1,9 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.teamcode.MM_VuforiaRR;
 
 
 @TeleOp(name="VuforiaNavigate", group="Linear Opmode")
@@ -15,28 +11,22 @@ public class VuforiaNavigate extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    MM_VuforiaRR vuforia = new MM_VuforiaRR();
+    private Hardware2017Gamebot robot = null;
+    private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        robot.init(hardwareMap);
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //reset encoders, as we use them later
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sleep(250); //Give time for the reset
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Initailize our Vuforia Class, give displacements in mm
         vuforia.init(125,-150,-165);
@@ -65,34 +55,36 @@ public class VuforiaNavigate extends LinearOpMode {
             }
         }
         sleep(3000);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double desiredY;
         try {
-             desiredY = 55 - position[1];
+             desiredY = 50 - position[1];
              telemetry.addData("desiredY", desiredY);
         }
         catch (java.lang.NullPointerException e)
         {
             telemetry.addData("ERROR", "Couldn't pull current position, assuming 0");
-            desiredY= 55;
+            desiredY= 50;
         }
         telemetry.update();
         sleep(3000);
-        rightDrive.setPower(.25);
-        leftDrive.setPower(.25);
+        robot.rightDrive.setPower(.25);
+        robot. leftDrive.setPower(.25);
         //only checks right, for now
-        while (rightDrive.getCurrentPosition() < inToDegrees(desiredY,4, 1000)){
-            telemetry.addData("Right", rightDrive.getCurrentPosition());
+        while (robot.rightDrive.getCurrentPosition() < inToDegrees(desiredY)){
+            telemetry.addData("Right", robot.rightDrive.getCurrentPosition());
             telemetry.update();
         }
-        rightDrive.setPower(0);
-        leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+        robot.leftDrive.setPower(0);
         sleep(5000);
 
     }
-    public double inToDegrees(double inches, double wheelDiameter, int ticsPerRev)
+    private double inToDegrees(double inches)
     {
+        int wheelDiameter = 4; //Declared here bc always 4 with this bot
+        int ticsPerRev = 1000; //Declared here bc always 4 with this bot
         double wheelCircum = 3.14159 * wheelDiameter;
         double rotations = inches/wheelCircum;
         return rotations*ticsPerRev;

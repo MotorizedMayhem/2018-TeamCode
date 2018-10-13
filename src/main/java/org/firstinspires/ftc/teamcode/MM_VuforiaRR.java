@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -31,10 +33,11 @@ public class MM_VuforiaRR {
     final float mmFTCFieldWidth  = (12*6) * mmPerInch;       // the width of the FTC field (from the center point to the outer panels)
     final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
+    private HardwareMap hardwareMap = null;
     //constructor
-    MM_VuforiaRR()
+    MM_VuforiaRR(HardwareMap hardwareMap)
     {
-
+        this.hardwareMap = hardwareMap;
     }
     public void init(int IN_CAMERA_FORWARD_DISPLACEMENT,int IN_CAMERA_LEFT_DISPLACEMENT,int IN_CAMERA_VERTICAL_DISPLACEMENT )
     {
@@ -56,9 +59,9 @@ public class MM_VuforiaRR {
          */
         VuforiaLocalizer vuforia;
 
-        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY ;
