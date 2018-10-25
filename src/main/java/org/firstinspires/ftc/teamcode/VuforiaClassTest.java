@@ -19,7 +19,7 @@ public class VuforiaClassTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    MM_VuforiaRR vuforia = new MM_VuforiaRR();
+    MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
 
     @Override
     public void runOpMode() {

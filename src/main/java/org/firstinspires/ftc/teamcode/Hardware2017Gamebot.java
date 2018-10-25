@@ -95,5 +95,9 @@ public class Hardware2017Gamebot
 
         // Define and initialize ALL installed servos.
     }
+    public void resetEncoders(){
+
+
+    }
  }
 

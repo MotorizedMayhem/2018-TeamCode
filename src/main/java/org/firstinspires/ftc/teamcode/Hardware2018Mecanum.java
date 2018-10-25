@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -78,7 +79,7 @@ public class Hardware2018Mecanum
         backleftDrive  = hwMap.get(DcMotor.class, "backleft");
         backrightDrive = hwMap.get(DcMotor.class, "backright");
         frontleftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        frontrightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        frontrightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to REVERSE if using AndyMark motors
         backleftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         backrightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
@@ -96,6 +97,22 @@ public class Hardware2018Mecanum
         backrightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
+    }
+    public void gamepadDrive(double gamepadX, double gamepadY, double rotation, double imu_correction)
+    {
+        // Setup a variable for each drive wheel to save power level for telemetry
+        double r = Math.hypot(-gamepadX, gamepadY);
+        double robotAngle = Math.atan2(gamepadY, -gamepadX) - Math.PI / 4 + imu_correction; //TODO TEST IF WORKs with + imu
+        double rightX = -rotation;//negative bc its intuitive if you put in x on a stick
+        final double v1 = r * Math.cos(robotAngle) + rightX;
+        final double v2 = r * Math.sin(robotAngle) - rightX;
+        final double v3 = r * Math.sin(robotAngle) + rightX;
+        final double v4 = r * Math.cos(robotAngle) - rightX;
+
+        frontleftDrive.setPower(v1);
+        frontrightDrive.setPower(v2);
+        backleftDrive.setPower(v3);
+        backrightDrive.setPower(v4);
     }
  }
 

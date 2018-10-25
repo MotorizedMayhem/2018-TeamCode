@@ -117,7 +117,7 @@ public class MM_VuforiaRR {
         final int CAMERA_FORWARD_DISPLACEMENT  = IN_CAMERA_FORWARD_DISPLACEMENT;   // eg: Camera is 110 mm in front of robot center
         final int CAMERA_VERTICAL_DISPLACEMENT = IN_CAMERA_VERTICAL_DISPLACEMENT;   // eg: Camera is 200 mm above ground
         final int CAMERA_LEFT_DISPLACEMENT     = IN_CAMERA_LEFT_DISPLACEMENT;     // eg: Camera is ON the robot's center line
-        //TODO ARE VERT AND LEFT BACKWARD
+        //TODO ARE VERT AND LEFT BACKWARD?
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,

@@ -13,6 +13,7 @@ public class VuforiaNavigate extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private Hardware2017Gamebot robot = null;
     private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
+    private MM_IMU imu = new MM_IMU(hardwareMap);
 
     @Override
     public void runOpMode() {
@@ -33,10 +34,13 @@ public class VuforiaNavigate extends LinearOpMode {
         //vuforia.init(0,0,0);
         //TODO LEFT AND VERT BACKWARD?
 
+        imu.init(); //initialize IMU
+
         telemetry.addData("Status", "READY");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        imu.updateAngles();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
@@ -79,6 +83,10 @@ public class VuforiaNavigate extends LinearOpMode {
         robot.rightDrive.setPower(0);
         robot.leftDrive.setPower(0);
         sleep(5000);
+
+
+
+
 
     }
     private double inToDegrees(double inches)
