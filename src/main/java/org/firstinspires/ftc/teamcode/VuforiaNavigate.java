@@ -11,9 +11,9 @@ public class VuforiaNavigate extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private Hardware2017Gamebot robot = null;
+    private Hardware2018Mecanum robot = null;
     private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
-    private MM_IMU imu = new MM_IMU(hardwareMap);
+    //private MM_IMU imu = new MM_IMU(hardwareMap);
 
     @Override
     public void runOpMode() {
@@ -21,26 +21,30 @@ public class VuforiaNavigate extends LinearOpMode {
         telemetry.update();
 
         robot.init(hardwareMap);
+        //also inits imu
 
         //reset encoders, as we use them later
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         sleep(250); //Give time for the reset
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Initailize our Vuforia Class, give displacements in mm
         vuforia.init(125,-150,-165);
         //vuforia.init(0,0,0);
         //TODO LEFT AND VERT BACKWARD?
 
-        imu.init(); //initialize IMU
 
         telemetry.addData("Status", "READY");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        imu.updateAngles();
+        robot.imu.updateAngles();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
@@ -59,8 +63,10 @@ public class VuforiaNavigate extends LinearOpMode {
             }
         }
         sleep(3000);
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double desiredY;
         try {
              desiredY = 50 - position[1];
@@ -73,15 +79,20 @@ public class VuforiaNavigate extends LinearOpMode {
         }
         telemetry.update();
         sleep(3000);
-        robot.rightDrive.setPower(.25);
-        robot. leftDrive.setPower(.25);
+        robot.frontleftDrive.setPower(.25);
+        robot.frontrightDrive.setPower(.25);
+        robot.backleftDrive.setPower(.25);
+        robot.backrightDrive.setPower(.25);
+
         //only checks right, for now
-        while (robot.rightDrive.getCurrentPosition() < inToDegrees(desiredY)){
-            telemetry.addData("Right", robot.rightDrive.getCurrentPosition());
+        while (robot.frontleftDrive.getCurrentPosition() < inToDegrees(desiredY)){
+            telemetry.addData("Front_Right", robot.frontrightDrive.getCurrentPosition());
             telemetry.update();
         }
-        robot.rightDrive.setPower(0);
-        robot.leftDrive.setPower(0);
+        robot.frontleftDrive.setPower(0);
+        robot.frontrightDrive.setPower(0);
+        robot.backleftDrive.setPower(0);
+        robot.backrightDrive.setPower(0);
         sleep(5000);
 
 

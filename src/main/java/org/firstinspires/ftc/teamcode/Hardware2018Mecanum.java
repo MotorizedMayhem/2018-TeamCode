@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static java.lang.Thread.sleep;
+
+
 /**
  * This is NOT an opmode.
  *
@@ -62,6 +65,8 @@ public class Hardware2018Mecanum
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
+    public MM_IMU imu = null;
+
 
     /* Constructor */
     public Hardware2018Mecanum(){
@@ -72,6 +77,7 @@ public class Hardware2018Mecanum
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
+        imu = new MM_IMU(ahwMap);
 
         // Define and Initialize Motors
         frontleftDrive  = hwMap.get(DcMotor.class, "frontleft");
@@ -97,12 +103,18 @@ public class Hardware2018Mecanum
         backrightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
+
+        //Initialize imu
+        imu.init();
     }
-    public void gamepadDrive(double gamepadX, double gamepadY, double rotation, double imu_correction)
+    public void gamepadDrive(double gamepadX, double gamepadY, double rotation, double imu_yaw)
     {
         // Setup a variable for each drive wheel to save power level for telemetry
         double r = Math.hypot(-gamepadX, gamepadY);
-        double robotAngle = Math.atan2(gamepadY, -gamepadX) - Math.PI / 4 + imu_correction; //TODO TEST IF WORKs with + imu
+        //double robotAngle = Math.atan2(gamepadY, -gamepadX) - Math.PI / 4
+        double imu_correction = imu_yaw * (Math.PI/180);
+        double robotAngle = Math.atan2(gamepadY, -gamepadX) - Math.PI / 4 - imu_correction;
+
         double rightX = -rotation;//negative bc its intuitive if you put in x on a stick
         final double v1 = r * Math.cos(robotAngle) + rightX;
         final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -114,5 +126,77 @@ public class Hardware2018Mecanum
         backleftDrive.setPower(v3);
         backrightDrive.setPower(v4);
     }
- }
+    public void rotate(double power)
+    {
+        //positive power is clockwise rotation
+        frontleftDrive.setPower(power);
+        backleftDrive.setPower(power);
+
+        frontrightDrive.setPower(-power);
+        backrightDrive.setPower(-power);
+    }
+    public void resetAllEncoders()
+    {
+
+        frontrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backrightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backleftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //sleep(250);//Give time for the reset
+        try { //stolen off stackOverflow, who knows if it works
+            sleep(200,0);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        frontrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void moveBetweenPoints(double x1,double y1,double x2,double y2,double imu_correction)
+    {
+        double deltaX = x2-x1;
+        double deltaY = y2-y1;
+        //get current position
+        imu.updateAngles();
+        double currentRotation = imu.yaw; //maybe replace with vuforia
+        double finalRotation = (Math.atan2(deltaY,deltaX))*(180/Math.PI);//converts it back to degrees
+        double distance = Math.hypot(deltaY,deltaX);
+            //same as sqrt(x^2+y^2)
+        if (finalRotation > currentRotation){
+            imu.updateAngles();
+            currentRotation = (imu.yaw+imu_correction)%360;
+            while (currentRotation < finalRotation)
+            {
+                rotate(0.25);
+            }
+        }
+        else if (finalRotation < currentRotation){
+            imu.updateAngles();
+            currentRotation = (imu.yaw+imu_correction)%360;
+            while (currentRotation > finalRotation)
+            {
+                rotate(-0.25);
+            }
+
+        }
+        //if we're already at the right heading, we dont need to rotate at all
+
+
+
+    }
+    public double getImuCorrection(MM_VuforiaRR vuforia) { //should only be called if we see a picture
+        imu.updateAngles();
+        double current = imu.yaw;
+        double correct = vuforia.getPosition()[5];//z or yaw in that class
+        return (correct-current);
+    }
+
+
+
+
+}
+
+
 
