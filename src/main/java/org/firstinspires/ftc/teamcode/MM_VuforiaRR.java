@@ -38,8 +38,7 @@ public class MM_VuforiaRR {
     }
     public void init(int IN_CAMERA_FORWARD_DISPLACEMENT,int IN_CAMERA_LEFT_DISPLACEMENT,int IN_CAMERA_VERTICAL_DISPLACEMENT )
     {
-        final String VUFORIA_KEY = "AW4mcUD/////AAAAGfEcj3JVME4OtxqGU15CdbR8KU+l1F5ydlW8/+eo5yhpCDnwc0cuzi5JOAP0NPPNcxHHwp2ItJKlVMGPloFdY155bwe/JZDyQyRNiFq8Q8h3IRv06QICR2Mig4xmD1KmnqVGKoZa/aT16h+0/EVULOlm+xX1OJvJLjiIOtVUWYNzUgMka1ls/FbCIh9BLK4z/BviY+C6tTZ94SPsKOLXwPRxngu1t/lHtixZ12hCPp50JGxtw5OYf47PC5MjRHhDO2x4rpgLE+SHrL+Ijx9KWG7RJV4Y4oo9ODsElgttiaI8eeT3nmol8m6ziaCNO9srrXLnJCbo5H2rxm1D2dpFyTV5NZfa64uFd443PTSZ0Hot";
-
+        final String VUFORIA_KEY = "Adxgm9L/////AAABmf4X4r11gU5QjdS+o++UzoZdYE8ZWx5AnTVVr3lhgbm7NXTbtSGDU2CeUqRgcliLekQqIQtK4SCFCGmTrC9fu/fN0Mlnl1ul2djmLaT+4y7bxti+F9IMOFl2bh9yO3qeny+yyv1/uzupVJM522Jt8kEjMl6wklFQCKjow+pCDDvKQ8/HiA/HjIV4qIcc/sqnIJys6BWUt6Oj5c1NuJIIU6L7A8dkYh29xC1DHAt9jnIRefQHr7wo/OjfvqvL6x2VFkh2/o7z600lMwWjRv+X6oQ3df8JvFn3DOaOiw1Qs6pnLo4DcSZrQY0F9Y/RjM4/u+BrtF53QTw188j6t0PTrsh5hWwuUDLnp1WLA0zFZNs/";
 
 
         // Select which camera you want use.  The FRONT camera is the one on the same side as the screen.
