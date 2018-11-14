@@ -28,21 +28,20 @@ public class MM_IMU
     Acceleration gravity;
 
     //Hardware Map used for init imu
-    HardwareMap hardwareMap = null;
 
     //public angles variables ready by outside programs
-    public float pitch = 0;
-    public float roll = 0;
-    public float yaw = 0;
+    public double pitch = 0;
+    public double roll = 0;
+    public double yaw = 0;
 
 
 
 
-    MM_IMU(HardwareMap hM) //constructor, pass it HardwareMap
+    MM_IMU() //constructor, pass it HardwareMap
     {
-        this.hardwareMap = hM;
+
     }
-    public void init(){
+    public void init(HardwareMap localMap){
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
@@ -57,11 +56,11 @@ public class MM_IMU
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = localMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
         // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        //imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         //TODO the sample starts this after start, we'll see if it matters
     }
     public void updateAngles(){
@@ -70,8 +69,22 @@ public class MM_IMU
         yaw = angles.firstAngle;
         roll = angles.secondAngle;
         pitch = angles.thirdAngle;
-
+    }
+    public void updateCorrectedAngles(double correction){
+        updateAngles();
+        yaw += correction;
+        double corrected = yaw; //set in case neither of the ifs are triggered
+        double addedCorr = yaw; //used to check if value is out of range
+        if (addedCorr > 180){
+            corrected = addedCorr-360;
+        }
+        else if(addedCorr < -180)
+        {
+            corrected = addedCorr+360;
+        }
+        yaw = corrected;
 
     }
+
 
 }

@@ -77,7 +77,7 @@ public class Hardware2018Mecanum
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-        imu = new MM_IMU(ahwMap);
+        imu = new MM_IMU();
 
         // Define and Initialize Motors
         frontleftDrive  = hwMap.get(DcMotor.class, "frontleft");
@@ -105,7 +105,7 @@ public class Hardware2018Mecanum
         // Define and initialize ALL installed servos.
 
         //Initialize imu
-        imu.init();
+        imu.init(hwMap);
     }
     public void gamepadDrive(double gamepadX, double gamepadY, double rotation, double imu_yaw)
     {

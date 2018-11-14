@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -126,8 +127,8 @@ public class MM_VuforiaRR {
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
-                        CAMERA_CHOICE == FRONT ? 90 : -90, 0, -90));
-        //Third Angle is 0 in example, rotated 90 to work with last year game bot
+                        CAMERA_CHOICE == FRONT ? 90 : -90, 0, 0));
+        //Third Angle is 0 in example, rotated -90 to work with last year game bot
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables)
@@ -170,6 +171,17 @@ public class MM_VuforiaRR {
         //telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         double[] position = {translation.get(0)/mmPerInch,translation.get(1)/mmPerInch,translation.get(2)/mmPerInch,rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle};
         return position;
+    }
+    public double getCorrection(MM_IMU imu)
+    {
+        if (TargetVisible()){
+            double current = imu.yaw;
+            double correct = getPosition()[5];//gets heading
+            return(correct - current);
+        }
+        else{
+            return 0;
+        }
     }
 
 }
