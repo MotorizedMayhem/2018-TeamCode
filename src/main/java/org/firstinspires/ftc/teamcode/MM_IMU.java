@@ -33,6 +33,7 @@ public class MM_IMU
     public double pitch = 0;
     public double roll = 0;
     public double yaw = 0;
+    public double correctedYaw = 0;
 
 
 
@@ -72,9 +73,9 @@ public class MM_IMU
     }
     public void updateCorrectedAngles(double correction){
         updateAngles();
-        yaw += correction;
-        double corrected = yaw; //set in case neither of the ifs are triggered
-        double addedCorr = yaw; //used to check if value is out of range
+        correctedYaw= yaw + correction;
+        double corrected = correctedYaw; //set in case neither of the ifs are triggered
+        double addedCorr = correctedYaw; //used to check if value is out of range
         if (addedCorr > 180){
             corrected = addedCorr-360;
         }
@@ -82,7 +83,7 @@ public class MM_IMU
         {
             corrected = addedCorr+360;
         }
-        yaw = corrected;
+        correctedYaw = corrected;
 
     }
 

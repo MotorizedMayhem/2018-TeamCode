@@ -63,21 +63,25 @@ public class VuforiaClassTest extends LinearOpMode {
                         position[3], position[4], position[5]);
                 telemetry.addData("Raw IMU", imu.yaw);
                 telemetry.addData("Correction", correction);
-                telemetry.addData("Corrected", getCorrected((imu.yaw+correction)));
+                telemetry.addData("Corrected", imu.correctedYaw);
                 telemetry.update();
 
 
             }
             else {
                 telemetry.addData("Status","No Target Visible");
+                telemetry.addData("Raw IMU", imu.yaw);
+                telemetry.addData("Correction", correction);
+                telemetry.addData("Corrected", imu.correctedYaw);
                 telemetry.update();
 
             }
-            imu.updateAngles();
+            imu.updateCorrectedAngles(correction);
 
 
         }
     }
+    /*
     private double getCorrected(double addedCorr)
     {
 
@@ -92,4 +96,5 @@ public class VuforiaClassTest extends LinearOpMode {
 
         return corrected;
     }
+    */
 }
