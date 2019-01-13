@@ -128,7 +128,7 @@ public class MM_VuforiaRR {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
                         CAMERA_CHOICE == FRONT ? 90 : -90, 0, 0));
-        //Third Angle is 0 in example, rotated -90 to work with last year game bot
+        //Third Angle is 0 in example, rotate to -90 if you want it to work with last year game bot
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables)

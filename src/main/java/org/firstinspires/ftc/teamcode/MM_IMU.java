@@ -38,7 +38,7 @@ public class MM_IMU
 
 
 
-    MM_IMU() //constructor, pass it HardwareMap
+    MM_IMU() //constructor, pass it HardwareMap later
     {
 
     }

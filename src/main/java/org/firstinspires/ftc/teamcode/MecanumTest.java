@@ -14,7 +14,7 @@ public class MecanumTest extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private Hardware2018Mecanum robot = new Hardware2018Mecanum();
-    private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
+    //private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -23,7 +23,7 @@ public class MecanumTest extends OpMode
     public void init() {
         telemetry.addData("Status", "Initializing");
         robot.init(hardwareMap);
-        vuforia.init(125,-150,-165);
+        //vuforia.init(125,-150,-165);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -47,14 +47,48 @@ public class MecanumTest extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
+    boolean yPress = false;
     @Override
     public void loop() {
         robot.imu.updateAngles();
-        robot.gamepadDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,robot.imu.yaw);
+
+        if (yPress)
+        {
+            robot.gamepadDriveNoCL(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
+        }
+        else
+        {
+            robot.gamepadDriveCL(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,robot.imu.yaw);
+        }
+        if (gamepad1.y){
+            if (yPress)
+            {
+                yPress=false;
+            }
+            else
+            {
+               yPress=true;
+            }
+        }
+        telemetry.addData("yPress", yPress);
         telemetry.addData("imu heading", robot.imu.yaw);
         if (gamepad1.a)
         {
-            robot.moveBetweenPoints(0,0,5,5,0);
+            robot.straight(.2);
+            double avgEncoder = (robot.backrightDrive.getCurrentPosition() + robot.backleftDrive.getCurrentPosition())/2;
+            while (avgEncoder < 1000){
+                avgEncoder = (robot.backrightDrive.getCurrentPosition() + robot.backleftDrive.getCurrentPosition())/2;
+            }
+            robot.straight(0);
+        }
+        while (gamepad1.b)
+        {
+            robot.frontleftDrive.setPower(0.25);
+            robot.backleftDrive.setPower(0.25);
+
+            robot.frontrightDrive.setPower(0.25);
+            robot.backrightDrive.setPower(0.25);
         }
     }
 
@@ -65,4 +99,8 @@ public class MecanumTest extends OpMode
     public void stop() {
     }
 
+    private void sleep(int ms){
+        runtime.reset();
+        while (runtime.milliseconds() < ms){}
+    }
 }
