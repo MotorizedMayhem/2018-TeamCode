@@ -183,5 +183,13 @@ public class MM_VuforiaRR {
             return 0;
         }
     }
+    public String getTarget(){
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                return trackable.getName();
+            }
+        }
+        return null;
+    }
 
 }

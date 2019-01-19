@@ -20,9 +20,8 @@ import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-
+@Disabled
 @TeleOp(name="VuforiaClassTest", group="Linear Opmode")
-
 public class VuforiaClassTest extends LinearOpMode {
 
     // Declare OpMode members.

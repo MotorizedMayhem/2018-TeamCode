@@ -5,12 +5,15 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.EyewearUserCalibrator;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Hardware2018Mecanum
 {
@@ -22,8 +25,12 @@ public class Hardware2018Mecanum
     public DcMotor  pitchArm = null;
     public Servo  graber = null;
     public DcMotor liftMotor = null;
+    public DcMotor extendArm = null;
     public NormalizedColorSensor leftColor = null;
+    public DistanceSensor leftDistance = null;
     public NormalizedColorSensor rightColor = null;
+    public DistanceSensor rightDistance = null;
+
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -52,9 +59,11 @@ public class Hardware2018Mecanum
         pitchArm = hwMap.get(DcMotor.class, "pitch");
         graber = hwMap.get(Servo.class,"grab");
         liftMotor = hwMap.get(DcMotor.class, "lift");
+        extendArm = hwMap.get(DcMotor.class, "extend");
         leftColor = hwMap.get(NormalizedColorSensor.class, "leftcolor");
+        leftDistance = hwMap.get(DistanceSensor.class, "leftcolor");
         rightColor = hwMap.get(NormalizedColorSensor.class, "rightcolor");
-
+        rightDistance = hwMap.get(DistanceSensor.class, "rightcolor");
 
         frontleftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontrightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to REVERSE if using AndyMark motors
@@ -64,6 +73,9 @@ public class Hardware2018Mecanum
         pitchArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotor.Direction.FORWARD); //Positive is up
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extendArm.setDirection(DcMotor.Direction.REVERSE);
+        extendArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
         // Set all motors to zero power
@@ -72,6 +84,7 @@ public class Hardware2018Mecanum
         backleftDrive.setPower(0);
         backrightDrive.setPower(0);
         pitchArm.setPower(0);
+        extendArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -85,6 +98,9 @@ public class Hardware2018Mecanum
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        extendArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Initialize imu
         imu.init(hwMap);
@@ -170,11 +186,47 @@ public class Hardware2018Mecanum
         Color.colorToHSV(colors.toColor(),hsvValues); //Color is a java class, sets hsvValues to the converted colors
         return hsvValues[0]; //returns hue
     }
+    public double getLeftDistance(DistanceUnit e)
+    {
+        return leftDistance.getDistance(e);
+    }
+    public double[] leftColorCollection(){
+        double[] value = new double[8];
+        value[0]=leftDistance.getDistance(DistanceUnit.MM);
+        NormalizedRGBA colors = leftColor.getNormalizedColors(); //get colors from sensor
+
+        double max = Math.max(Math.max(Math.max(colors.red, colors.green), colors.blue), colors.alpha);
+        colors.red   /= max;
+        colors.green /= max;
+        colors.blue  /= max;
+
+        value[1]=colors.alpha;
+        value[2]=colors.red;
+        value[3]=colors.green;
+        value[4]=colors.blue;
+
+        float[] hsvValues = new float[3];
+        Color.colorToHSV(colors.toColor(),hsvValues); //Color is a java class, sets hsvValues to the converted colors
+        value[5]= hsvValues[0];
+        value[6]= hsvValues[1];
+        value[7]= hsvValues[2];
+
+
+
+        return value; //returns hue
+
+
+
+    }
     public double rightColorHue(){
         float[] hsvValues = new float[3];
         NormalizedRGBA colors = rightColor.getNormalizedColors(); //get colors from sensor
         Color.colorToHSV(colors.toColor(),hsvValues); //Color is a java class, sets hsvValues to the converted colors
         return hsvValues[0]; //returns hue
+    }
+    public double getRightDistance(DistanceUnit e)
+    {
+        return rightDistance.getDistance(e);
     }
     /*
     public void moveBetweenPoints(double x1,double y1,double x2,double y2,double imu_correction)

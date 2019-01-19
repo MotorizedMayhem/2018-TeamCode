@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import android.text.method.MovementMethod;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates empty OpMode
  */
+@Disabled
 @Autonomous(name = "AutonomousV1")
 public class AutoV1 extends LinearOpMode { //FOR QUADRANT 1 and 3
 
