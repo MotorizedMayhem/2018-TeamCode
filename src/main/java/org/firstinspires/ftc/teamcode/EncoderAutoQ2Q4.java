@@ -5,7 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import static java.lang.Double.NaN;
 
@@ -16,15 +19,20 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
     private ElapsedTime runtime = new ElapsedTime();
     Hardware2018Mecanum robot = new Hardware2018Mecanum();
     private MM_VuforiaRR vuforia = new MM_VuforiaRR(hardwareMap);
+    private MM_TFlow tFlow = new MM_TFlow(telemetry);
     boolean bumped = false;
+
+
     @Override
     public void runOpMode(){
         telemetry.addData("Status", "Initializing");
         telemetry.update();
         robot.init(hardwareMap);
         boolean fullLoop = true;
+        VuforiaLocalizer CameraInstance = vuforia.init(0,0,0);
 
-        vuforia.init(0,0,0);
+
+        tFlow.init(hardwareMap, CameraInstance);
 
 
         telemetry.addData("Status", "READY");
@@ -39,12 +47,18 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
 
 
             robot.liftMotor.setPower(1);
-            while (robot.liftMotor.getCurrentPosition() < 16000) {
+            while (robot.liftMotor.getCurrentPosition() < 18000) {
                 telemetry.addData("Lift", robot.liftMotor.getCurrentPosition());
                 telemetry.update();
             }
             robot.liftMotor.setPower(0);
             sleep(100);
+
+            robot.liftMotor.setPower(-.5);
+            robot.liftMotor.setTargetPosition(27000);
+            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
 
 
 
@@ -86,7 +100,7 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
             robot.backleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            double distance = inToDegrees(24); //24 inches to jewel //TODO change back to 24
+            double distance = inToDegrees(18); //24 inches to jewel //TODO change back to 24
             double avgEncoder = 0;
 
             robot.straight(.6); //To the Jewels
@@ -125,11 +139,11 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
 
 
             sleep(100);
-            robot.strafe(-.6); //gets to far jewel
+            robot.strafe(-.7); //gets to far jewel
             sleep(1200);
             robot.straight(0);//stop motors
             sleep(100); //time to stop
-            robot.strafe(.25);//start path back
+            robot.strafe(.35);//start path back
 
 
             runtime.reset();
@@ -138,6 +152,28 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
             double remainingMs = 0;
 
             double msToRun = 7500; //for the whole strafe
+            tFlow.activate();
+            int visMins = 0;
+
+
+            while(opModeIsActive() && runtime.milliseconds() < 7000)
+            {
+                visMins = tFlow.mineralsVisible();
+                if (visMins == 1)
+                {
+                    if (tFlow.isGold())
+                    {
+                        remainingMs = msToRun - runtime.milliseconds();
+                        YellowMineralSeen();
+                        break;
+                    }
+                }
+                telemetry.addData("Visble: ", visMins);
+                telemetry.update();
+
+            }
+            tFlow.tfod.shutdown();
+            /*
             while (opModeIsActive() && runtime.milliseconds() < 6200) //if we dont see 1 and 2, move on
             {
                 double leftColor = robot.leftColorHue();
@@ -181,20 +217,21 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
                 telemetry.update();
                 sleep(100);
             }
+            */
 
-
-
+            /*
             if (runtime.milliseconds() > 5500 && !bumped)
             {
                 remainingMs = msToRun - runtime.milliseconds();
                 YellowMineralSeen();
 
             }
+            */
 
             runtime.reset();
             if (remainingMs !=0) {//the != 0 is to check if we saw the mineral
-                robot.strafe(.5);
-                remainingMs /= 2;
+                robot.strafe(.75);
+                remainingMs /= 3;
                 while (runtime.milliseconds() < remainingMs) // divide by 2 bc speed is twice
                 {
 
@@ -580,10 +617,10 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
     }
     private void YellowMineralSeen()
     {
-        robot.straight(.3);
-        sleep(500);
-        robot.straight(-.3);
-        sleep(750);
+        robot.straight(.8);
+        sleep(550);
+        robot.straight(-.8);
+        sleep(250);
         bumped = true;
     }
 }

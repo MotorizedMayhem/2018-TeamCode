@@ -60,10 +60,10 @@ public class Hardware2018Mecanum
         graber = hwMap.get(Servo.class,"grab");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         extendArm = hwMap.get(DcMotor.class, "extend");
-        leftColor = hwMap.get(NormalizedColorSensor.class, "leftcolor");
-        leftDistance = hwMap.get(DistanceSensor.class, "leftcolor");
-        rightColor = hwMap.get(NormalizedColorSensor.class, "rightcolor");
-        rightDistance = hwMap.get(DistanceSensor.class, "rightcolor");
+        //leftColor = hwMap.get(NormalizedColorSensor.class, "leftcolor");
+        //leftDistance = hwMap.get(DistanceSensor.class, "leftcolor");
+        //rightColor = hwMap.get(NormalizedColorSensor.class, "rightcolor");
+        //rightDistance = hwMap.get(DistanceSensor.class, "rightcolor");
 
         frontleftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontrightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to REVERSE if using AndyMark motors
@@ -180,6 +180,7 @@ public class Hardware2018Mecanum
         backleftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backrightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+    /*
     public double leftColorHue(){
         float[] hsvValues = new float[3];
         NormalizedRGBA colors = leftColor.getNormalizedColors(); //get colors from sensor
@@ -228,6 +229,8 @@ public class Hardware2018Mecanum
     {
         return rightDistance.getDistance(e);
     }
+    */
+
     /*
     public void moveBetweenPoints(double x1,double y1,double x2,double y2,double imu_correction)
     {

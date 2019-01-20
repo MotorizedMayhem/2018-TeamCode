@@ -12,6 +12,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +38,14 @@ public class MM_VuforiaRR {
     final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     private HardwareMap hardwareMap = null;
+    public VuforiaLocalizer CameraInstance;
+
     //constructor
     MM_VuforiaRR(HardwareMap hardwareMap)
     {
         this.hardwareMap = hardwareMap;
     }
-    public void init(int IN_CAMERA_FORWARD_DISPLACEMENT,int IN_CAMERA_LEFT_DISPLACEMENT,int IN_CAMERA_VERTICAL_DISPLACEMENT )
+    public VuforiaLocalizer init(int IN_CAMERA_FORWARD_DISPLACEMENT,int IN_CAMERA_LEFT_DISPLACEMENT,int IN_CAMERA_VERTICAL_DISPLACEMENT )
     {
         final String VUFORIA_KEY = "Adxgm9L/////AAABmf4X4r11gU5QjdS+o++UzoZdYE8ZWx5AnTVVr3lhgbm7NXTbtSGDU2CeUqRgcliLekQqIQtK4SCFCGmTrC9fu/fN0Mlnl1ul2djmLaT+4y7bxti+F9IMOFl2bh9yO3qeny+yyv1/uzupVJM522Jt8kEjMl6wklFQCKjow+pCDDvKQ8/HiA/HjIV4qIcc/sqnIJys6BWUt6Oj5c1NuJIIU6L7A8dkYh29xC1DHAt9jnIRefQHr7wo/OjfvqvL6x2VFkh2/o7z600lMwWjRv+X6oQ3df8JvFn3DOaOiw1Qs6pnLo4DcSZrQY0F9Y/RjM4/u+BrtF53QTw188j6t0PTrsh5hWwuUDLnp1WLA0zFZNs/";
 
@@ -57,7 +62,10 @@ public class MM_VuforiaRR {
          * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
          * localization engine.
          */
-        VuforiaLocalizer vuforia;
+        //VuforiaLocalizer vuforia;
+        //TODO replaced with object
+
+
         int cameraMonitorViewId=0;
         try {
             cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -74,13 +82,13 @@ public class MM_VuforiaRR {
         parameters.cameraDirection   = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        CameraInstance = ClassFactory.getInstance().createVuforia(parameters);
 
         // Load the data sets that for the trackable objects. These particular data
         // sets are stored in the 'assets' part of our application.
 
         //TODO MAYBE BROKE THIS
-        VuforiaTrackables targetsRoverRuckus = vuforia.loadTrackablesFromAsset("RoverRuckus");
+        VuforiaTrackables targetsRoverRuckus = CameraInstance.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
         blueRover.setName("Blue-Rover");
         VuforiaTrackable redFootprint = targetsRoverRuckus.get(1);
@@ -141,6 +149,7 @@ public class MM_VuforiaRR {
         /** Start tracking the data sets we care about. */
         targetsRoverRuckus.activate();
 
+        return CameraInstance;
     }
     public boolean TargetVisible()
     {
@@ -191,5 +200,6 @@ public class MM_VuforiaRR {
         }
         return null;
     }
+
 
 }

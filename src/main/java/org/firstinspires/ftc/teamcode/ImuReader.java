@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+@Disabled
 @TeleOp(name="ImuReader", group="Iterative Opmode")
-
 public class ImuReader extends OpMode
 {
     // Declare OpMode members.
@@ -99,6 +99,7 @@ public class ImuReader extends OpMode
             while (runtime.seconds() < 16){}
 
         }
+        /*
         double[] colorStuff = robot.leftColorCollection();
         telemetry.addData("distance", colorStuff[0]);
         telemetry.addData("alpha","%.3f", colorStuff[1]);
@@ -108,6 +109,7 @@ public class ImuReader extends OpMode
         telemetry.addData("H", "%.3f",colorStuff[5]);
         telemetry.addData("S", "%.3f",colorStuff[6]);
         telemetry.addData("V", "%.3f",colorStuff[7]);
+        */
 
 
         robot.extendArm.setPower(0);
