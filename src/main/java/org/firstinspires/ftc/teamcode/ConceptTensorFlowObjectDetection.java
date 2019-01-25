@@ -133,7 +133,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                               telemetry.addData("Gold Mineral Position", "Not Here");
                               telemetry.update();
                           }
+                          telemetry.addData("Confidence" , recognition.getConfidence());
+                          telemetry.update();
                         }
+                        //telemetry.addData("Confidence" , )
                         }
                       else {
                           telemetry.addData("Gold Mineral Position", "Not Here");

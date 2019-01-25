@@ -103,7 +103,7 @@ public class MM_TFlow {
 
 
 
-    public int mineralsVisible(){
+    private int mineralsVisible(){
 
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if(updatedRecognitions != null) {
@@ -111,12 +111,12 @@ public class MM_TFlow {
             if (numberSeen == 1) {
                 recognition = updatedRecognitions.get(0); //sets the class-wide variable if theres only 1 mineral
             }
+
         }
         return  numberSeen; //if updated, responds new value
         // if not, reponds value from before
-
     }
-    public boolean isGold(){
+    private boolean isGold(){
         if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
             return true;
         }
@@ -124,6 +124,25 @@ public class MM_TFlow {
             return false;
         }
 
+    }
+    public boolean goodGoldFound(){
+
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if(updatedRecognitions != null) {
+            numberSeen = updatedRecognitions.size();
+            for (Recognition r: updatedRecognitions) {
+                if(r.getConfidence() > 0.95 && r.getLabel().equals(LABEL_GOLD_MINERAL))
+                {
+                    telemetry.addData("Confidence", r.getConfidence());
+                    telemetry.update();
+                    return true;
+                }
+                telemetry.addData("Confidence", r.getConfidence());
+                telemetry.update();
+
+            }
+        }
+        return  false; //if updated, responds new value
     }
 
 
