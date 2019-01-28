@@ -336,41 +336,45 @@ public class EncoderAutoQ2Q4 extends LinearOpMode { //FOR RED CRATER TODO EVENTU
 
 
             //######################### Set Values depending on which seen #########################
-            switch (seenPicture) //god help us if its null
-            {
-                case("Red-Footprint"):
-                    goalX = 0;
-                    goalY = -62;
-                    depotSide = false;
-                    firstRotationCorrectedYaw = -80;
-                    redSide = true;
-                    //do stuff
-                    break;
-                case("Blue-Rover"):
-                    goalX = 0;
-                    goalY = 62;
-                    depotSide = false;
-                    firstRotationCorrectedYaw = 100;
-                    redSide = false;
+            try {
+                switch (seenPicture) //god help us if its null
+                {
+                    case ("Red-Footprint"):
+                        goalX = 0;
+                        goalY = -62;
+                        depotSide = false;
+                        firstRotationCorrectedYaw = -80;
+                        redSide = true;
+                        //do stuff
+                        break;
+                    case ("Blue-Rover"):
+                        goalX = 0;
+                        goalY = 62;
+                        depotSide = false;
+                        firstRotationCorrectedYaw = 100;
+                        redSide = false;
 
-                    break;
-                case("Back-Space"):
-                    goalX = 62;
-                    goalY = 0;
-                    depotSide = true;
-                    firstRotationCorrectedYaw = 10;
-                    redSide = true;
-                    break;
-                case("Front-Craters"):
-                    goalX = -62;
-                    goalY = 0;
-                    depotSide = true;
-                    firstRotationCorrectedYaw = -170; //also +180
-                    redSide = false;
-                    break;
+                        break;
+                    case ("Back-Space"):
+                        goalX = 62;
+                        goalY = 0;
+                        depotSide = true;
+                        firstRotationCorrectedYaw = 10;
+                        redSide = true;
+                        break;
+                    case ("Front-Craters"):
+                        goalX = -62;
+                        goalY = 0;
+                        depotSide = true;
+                        firstRotationCorrectedYaw = -170; //also +180
+                        redSide = false;
+                        break;
 
 
+                }
             }
+            catch (NullPointerException e){break;}
+
 
 
 
